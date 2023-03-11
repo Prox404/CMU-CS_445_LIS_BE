@@ -1,5 +1,6 @@
 // const mongoose = require('mongoose');
 const mssql = require('mssql/msnodesqlv8');
+const mysql = require('mysql');
 
 async function connect() {
     try {
@@ -12,9 +13,24 @@ async function connect() {
             }
         });
         await pool.connect().then(() => {
-            console.log('Connected to database');
+            console.log('Connected to mssql database');
         }).catch((err) => {
-            console.log('Database Connection Failed! Bad Config: ', err);
+            console.log('MSSQL Database Connection Failed! Bad Config: ', err);
+        });
+
+        const mysqlPool = mysql.createConnection({
+            host: process.env.MYSQL_SERVER_NAME,
+            user: process.env.MYSQL_USER_NAME,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE_NAME
+        });
+
+        mysqlPool.connect(function (err) {
+            if (err) {
+                console.log('Mysql Database Connection Failed! Bad Config: ', err);
+            } else {
+                console.log('Connected to mysql database');
+            }
         });
     } catch (error) {
         console.log('Connect failure!!!');

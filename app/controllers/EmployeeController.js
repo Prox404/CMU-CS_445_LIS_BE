@@ -1,3 +1,4 @@
+const db = require('../../config/db').mysqlPool;
 class EmployeeController {
     async store(req, res) {
         // idEmployee int primary key
@@ -12,7 +13,51 @@ class EmployeeController {
         // PaidLastYear decimal(2,0)
 
         const { EmployeeNumber, LastName, FirstName, SSN, PayRate, VacationDays, PaidToDate, PaidLastYear } = req.body;
-        
+
+        const sql = `INSERT INTO Employee (EmployeeNumber, LastName, FirstName, SSN, PayRate, VacationDays, PaidToDate, PaidLastYear) VALUES (${EmployeeNumber}, '${LastName}', '${FirstName}', ${SSN}, '${PayRate}', ${VacationDays}, ${PaidToDate}, ${PaidLastYear})`;
+
+        try {
+            db.query(sql, (err, result) => {
+                if (err) {
+                    res.send({
+                        status: 500,
+                        data: err
+                    });
+                } else {
+                    res.send({
+                        status: 200,
+                        data: result
+                    });
+                };
+            });
+        }
+        catch(err) {
+            console.log(err);
+        }
+
+    }
+
+    async getAllUser(req, res) {
+        const sql = 'SELECT * FROM Employee';
+        try {
+            db.query(sql, (err, result) => {
+                if (err) {
+                    res.send({
+                        status: 500,
+                        data: err
+                    });
+                } else {
+                    res.send({
+                        status: 200,
+                        data: result
+                    });
+                };
+            }
+            );
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
 }
 

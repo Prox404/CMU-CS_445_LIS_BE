@@ -12,15 +12,20 @@ app.use(morgan('combined'));
 
 var cors = require('cors')
 const dotenv = require('dotenv');
-const db = require('./config/db');
-
-const port = process.env.PORT || 3000
 
 // get config vars
 dotenv.config();
 
-// Connect to DB
-db.connect();
+
+const port = process.env.PORT || 3000
+
+
+
+// const db = require('./config/db');
+// // Connect to DB
+// db.connectMySQL();
+// db.connectMSSQL();
+
 
 const corsOptions = {
   origin: "*",

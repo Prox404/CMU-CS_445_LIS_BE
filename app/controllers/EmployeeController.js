@@ -12,9 +12,9 @@ class EmployeeController {
         // PaidToDate   decimal(2,0)
         // PaidLastYear decimal(2,0)
 
-        const { EmployeeNumber, LastName, FirstName, SSN, PayRate, VacationDays, PaidToDate, PaidLastYear } = req.body;
+        const {idEmployee, EmployeeNumber, LastName, FirstName, SSN, PayRate,PayRates_idPayRates, VacationDays, PaidToDate, PaidLastYear } = req.body;
 
-        const sql = `INSERT INTO Employee (EmployeeNumber, LastName, FirstName, SSN, PayRate, VacationDays, PaidToDate, PaidLastYear) VALUES (${EmployeeNumber}, '${LastName}', '${FirstName}', ${SSN}, '${PayRate}', ${VacationDays}, ${PaidToDate}, ${PaidLastYear})`;
+        const sql = `INSERT INTO Employee (idEmployee, EmployeeNumber, LastName, FirstName, SSN, PayRate, PayRates_idPayRates, VacationDays, PaidToDate, PaidLastYear) VALUES (${idEmployee}, ${EmployeeNumber}, '${LastName}', '${FirstName}', ${SSN}, '${PayRate}', ${PayRates_idPayRates}, ${VacationDays}, ${PaidToDate}, ${PaidLastYear})`;
 
         try {
             db.query(sql, (err, result) => {

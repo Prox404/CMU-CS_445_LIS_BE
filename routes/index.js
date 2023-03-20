@@ -1,5 +1,6 @@
 const employeeRoutes = require('./employee');
 const payRatesRoutes = require('./payrates');
+const personalRoutes = require('./personal');
 
 function route(app) {
     app.get('/', (req, res) => {
@@ -9,6 +10,7 @@ function route(app) {
 
     app.use('/payrates', payRatesRoutes);
 
+    app.use('/personal', personalRoutes);
 }
 
 module.exports = route

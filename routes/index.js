@@ -1,7 +1,8 @@
 const employeeRoutes = require('./employee');
 const payRatesRoutes = require('./payrates');
 const personalRoutes = require('./personal');
-const benefitPlansRoutes = require('./benefitPlans')
+const benefitPlansRoutes = require('./benefitPlans');
+const jobHistoryRoutes = require('./jobHistory')
 
 function route(app) {
     app.get('/', (req, res) => {
@@ -15,7 +16,7 @@ function route(app) {
 
     app.use('/benefitPlans', benefitPlansRoutes);
 
-
+    app.use('/jobHistory', jobHistoryRoutes);
 }
 
 module.exports = route

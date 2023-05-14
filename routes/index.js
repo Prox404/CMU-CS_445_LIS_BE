@@ -5,12 +5,15 @@ const benefitPlansRoutes = require('./benefitPlans');
 const jobHistoryRoutes = require('./jobHistory');
 const employmentRoutes = require('./employment');
 const emergencyContactRoutes = require('./emergencyContact');
+const employeesRoutes = require('./employees');
 
 function route(app) {
     app.get('/', (req, res) => {
         res.send('PayRoll API!');
     });
     app.use('/employee', employeeRoutes);
+    
+    app.use('/employees', employeesRoutes);
 
     app.use('/payrates', payRatesRoutes);
 

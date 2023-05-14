@@ -1,13 +1,13 @@
 const db = require('../../config/db').MSSQLpool;
-class BenefitPlansController {
+class EmergencyContactsController {
 
-    // Benefit_Plan_ID (pk, numberic(18,0), not null)
-    // Plan_Name (nvarchar(50), null)
-    // Deductable   (numberic(18,0), null)
-    // Percentage_CoPay (int, null)
+    // Employee_ID (PK, FK, numeric(1 8,0), not null)
+    // Emergency_Contact_Name (nvarchar(50), null)
+    // Phone_Number (nvarchar(50), null)
+    // Relationship (nvarchar(50), null)
 
-    async getAllBenefitPlans(req, res) {
-        const sql = 'SELECT * FROM Benefit_Plans';
+    async getAllEmploymentContact(req, res) {
+        const sql = 'SELECT * FROM Emergency_Contacts';
         try {
             db.query(sql, (err, result) => {
                 if (err) {
@@ -29,11 +29,22 @@ class BenefitPlansController {
         }
     }
 
-    async store(req, res){
-        const {  Plan_Name, Deductable , Percentage_CoPay} = req.body;
-
-        const sql = `INSERT INTO Benefit_Plans ( Plan_Name, Deductable , Percentage_CoPay ) VALUES ( '${Plan_Name}', ${Deductable}, ${Percentage_CoPay})`;
+    async store(req, res) {
     
+        const {
+            Employee_ID,
+            Emergency_Contact_Name,
+            Phone_Number,
+            Relationship
+        } = req.body;
+
+        const sql = "INSERT INTO Emergency_Contacts ( Employee_ID, Emergency_Contact_Name, Phone_Number, Relationship) VALUES (" +
+        Employee_ID + ", '" +
+        Emergency_Contact_Name + "', '" +
+        Phone_Number + "', '" +
+        Relationship + "')";
+
+        console.log(sql);
         try {
             db.query(sql, (err, result) => {
                 if (err) {
@@ -48,11 +59,11 @@ class BenefitPlansController {
                     });
                 };
             });
-        }catch{
+        }catch(err){
             console.log(err);
         }
-        
     }
 }
 
-module.exports = new BenefitPlansController;
+module.exports = new EmergencyContactsController;
+

@@ -12,7 +12,18 @@ class EmployeeController {
         // PaidToDate   decimal(2,0)
         // PaidLastYear decimal(2,0)
 
-        const {idEmployee, EmployeeNumber, LastName, FirstName, SSN, PayRate,PayRates_idPayRates, VacationDays, PaidToDate, PaidLastYear } = req.body;
+        const {
+            idEmployee, 
+            EmployeeNumber, 
+            LastName, 
+            FirstName, 
+            SSN, 
+            PayRate,
+            PayRates_idPayRates, 
+            VacationDays, 
+            PaidToDate, 
+            PaidLastYear 
+        } = req.body;
 
         const sql = `INSERT INTO Employee (idEmployee, EmployeeNumber, LastName, FirstName, SSN, PayRate, PayRates_idPayRates, VacationDays, PaidToDate, PaidLastYear) VALUES (${idEmployee}, ${EmployeeNumber}, '${LastName}', '${FirstName}', ${SSN}, '${PayRate}', ${PayRates_idPayRates}, ${VacationDays}, ${PaidToDate}, ${PaidLastYear})`;
 

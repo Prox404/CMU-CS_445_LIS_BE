@@ -1,5 +1,5 @@
 const db = require('../../config/db').MSSQLpool;
-class PersonalController {
+class JobHistoryController {
 
     // ID (PK,numberic(18,0), not null)
     // Employee_ID (FK,numberic(18,0), not null)
@@ -96,4 +96,4 @@ class PersonalController {
     }
 }
 
-module.exports = new PersonalController;
+module.exports = new JobHistoryController;

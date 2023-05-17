@@ -121,7 +121,7 @@ class EmployeesController {
     async getEmployeeEarnings(req, res) {
         // Thực hiện truy vấn cơ sở dữ liệu để lấy thông tin cần thiết
         // Truy vấn MySQL
-        const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, j.Department, j.Salary_Type, j.Pay_Period, j.Hours_per_Week
+        const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, j.Department, j.Salary_Type, j.Pay_Period, j.Hours_per_Week, e.Employment_Status
         FROM Personal p , Employment e , Job_History j
         WHERE p.Employee_ID = e.Employee_ID AND e.Employee_ID = j.Employee_ID`;
 
@@ -137,7 +137,7 @@ class EmployeesController {
             console.log('MsSQL query result:', mssqlResult);
 
             // Truy vấn MSSQL
-            const mysqlQuery = `SELECT e.EmployeeNumber, e.PayRate, p.Value
+            const mysqlQuery = `SELECT e.idEmployee, e.EmployeeNumber, e.PayRate, p.Value
     FROM employee e, payrates p
    WHERE e.PayRates_idPayRates = p.idPayRates`;
 
@@ -148,70 +148,95 @@ class EmployeesController {
                     return;
                 }
 
-                
+
                 console.log('MySQL query result:', mysqlResult);
-                
+
                 const totalIncomeByDepartment = {};
 
                 // Lặp qua kết quả từ MsSQL
                 mssqlResult.forEach((item) => {
-                  const employeeID = item.Employee_ID;
-                  const gender = item.Gender;
-                  const ethnicity = item.Ethnicity;
-                  const department = item.Department;
-                  const salaryType = item.Salary_Type;
-                  const payPeriod = item.Pay_Period;
-                  const hoursPerWeek = item.Hours_per_Week;
+                    let employeeID = item.Employee_ID;
+                    let gender = item.Gender;
+                    let ethnicity = item.Ethnicity;
+                    let department = item.Department;
+                    let salaryType = item.Salary_Type;
+                    let Employment_Status = item.Employment_Status;
+                    let payPeriod = item.Pay_Period;
+                    let hoursPerWeek = item.Hours_per_Week;
 
-                  console.log({
-                    employeeID,
-                    gender,
-                    ethnicity,
-                    department,
-                    salaryType,
-                    payPeriod,
-                    hoursPerWeek
-                  })
-              
-                  // Kiểm tra điều kiện và tính toán thu nhập tương ứng
-                  if (salaryType === 'Full-time') {
-                    // Tính toán thu nhập cho nhân viên làm việc toàn thời gian
-                    // Lấy thông tin về mức lương từ MSSQL
-                    const employeeInfo = mysqlResult.find((info) => info.EmployeeNumber === employeeID);
-                    if (employeeInfo) {
-                      const payRate = employeeInfo.PayRate;
-                      const value = employeeInfo.Value;
-              
-                      // Tính toán tổng thu nhập
-                      const totalIncome = payRate * value * hoursPerWeek * payPeriod;
-                      if (totalIncomeByDepartment[department]) {
-                        totalIncomeByDepartment[department] += totalIncome;
-                      } else {
-                        totalIncomeByDepartment[department] = totalIncome;
-                      }
+                    console.log({
+                        employeeID,
+                        gender,
+                        ethnicity,
+                        department,
+                        salaryType,
+                        payPeriod,
+                        hoursPerWeek,
+                        Employment_Status
+                    })
+
+                    switch (payPeriod){
+                        case 'Hourly':
+                            payPeriod = 1;
+                            break;
+                        case 'Weekly':
+                            payPeriod = 52;
+                            break;
+                        case 'Bi-Weekly':
+                            payPeriod = 26;
+                            break;
+                        case 'Monthly':
+                            payPeriod = 12;
+                            break;
+                        default:
+                            payPeriod = 1;
                     }
-                  } else if (salaryType === 'Part-time') {
-                    // Tính toán thu nhập cho nhân viên làm việc bán thời gian
-                    const employeeInfo = mysqlResult.find((info) => info.EmployeeNumber === employeeID);
-                    if (employeeInfo) {
-                      const payRate = employeeInfo.PayRate;
-                      const value = employeeInfo.Value;
-                
-                      // Tính toán tổng thu nhập
-                      const totalIncome = payRate * value * hoursPerWeek * payPeriod;
-                      if (totalIncomeByDepartment[department]) {
-                        totalIncomeByDepartment[department] += totalIncome;
-                      } else {
-                        totalIncomeByDepartment[department] = totalIncome;
-                      }
+                    //   console.log(Employment_Status == 'Part-time');
+                    // Kiểm tra điều kiện và tính toán thu nhập tương ứng
+                    if (Employment_Status == 'Full-time') {
+                        console.log('Full time')
+                        // Tính toán thu nhập cho nhân viên làm việc toàn thời gian
+                        // Lấy thông tin về mức lương từ MSSQL
+                        const employeeInfo = mysqlResult.find((info) => info.idEmployee == employeeID);
+                        if (employeeInfo) {
+                            console.log('employeeInfo: ', employeeInfo)
+                            const payRate = employeeInfo.PayRate;
+                            const value = employeeInfo.Value;
+
+                            
+
+                            // Tính toán tổng thu nhập
+                            const totalIncome = payRate * value * hoursPerWeek * payPeriod;
+                            console.log('totalIncome: ', totalIncome)
+                            if (totalIncomeByDepartment[department]) {
+                                totalIncomeByDepartment[department] += totalIncome;
+                            } else {
+                                totalIncomeByDepartment[department] = totalIncome;
+                            }
+                        }
+                    } else if (Employment_Status == 'Part-time') {
+                        console.log('Part-time')
+                        // Tính toán thu nhập cho nhân viên làm việc bán thời gian
+                        const employeeInfo = mysqlResult.find((info) => info.EmployeeNumber === employeeID);
+                        if (employeeInfo) {
+                            const payRate = employeeInfo.PayRate;
+                            const value = employeeInfo.Value;
+
+                            // Tính toán tổng thu nhập
+                            const totalIncome = payRate * value * hoursPerWeek * payPeriod;
+                            if (totalIncomeByDepartment[department]) {
+                                totalIncomeByDepartment[department] += totalIncome;
+                            } else {
+                                totalIncomeByDepartment[department] = totalIncome;
+                            }
+                        }
+                        // Tiếp tục xử lý tương tự như trên cho nhân viên làm việc bán thời gian
                     }
-                    // Tiếp tục xử lý tương tự như trên cho nhân viên làm việc bán thời gian
-                  }
                 });
-              
+
                 // Trả về kết quả tổng thu nhập theo từng phòng ban
                 res.json(totalIncomeByDepartment);
-              });
+            });
         });
     }
 }

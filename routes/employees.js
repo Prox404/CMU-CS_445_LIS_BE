@@ -5,8 +5,11 @@ const router = express.Router();
 router.post('/store', async (req, res) => {
     EmployeesController.store(req, res);
 });
-router.get('/total-income', async (req, res) => {
+router.post('/total-income', async (req, res) => {
     EmployeesController.getEmployeeEarnings(req, res);
+});
+router.post('/total-vacation-day', async (req, res) => {
+    EmployeesController.getTotalVacationDays(req, res);
 });
 router.get('/', async (req, res) => {
     EmployeesController.getAllUser(req, res);

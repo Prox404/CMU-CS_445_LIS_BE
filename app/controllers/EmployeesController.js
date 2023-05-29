@@ -239,7 +239,7 @@ class EmployeesController {
     //         });
     //     }
     async getEmployeeEarnings(req, res) {
-        const {
+        let {
             department,
             shareholder,
             gender,
@@ -247,9 +247,19 @@ class EmployeesController {
             employmentStatus,
             fromDate,
             toDate,
-        } = req.query;
+        } = req.body;
 
-        const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, j.Department, j.Salary_Type, j.Pay_Period, j.Hours_per_Week, e.Employment_Status
+        console.log({
+            department,
+            shareholder,
+            gender,
+            ethnicity,
+            employmentStatus,
+            fromDate,
+            toDate
+        });
+
+        const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, j.Department, j.Salary_Type, j.Pay_Period, j.Hours_per_Week, e.Employment_Status, p.Shareholder_Status
       FROM Personal p, Employment e, Job_History j
       WHERE p.Employee_ID = e.Employee_ID AND e.Employee_ID = j.Employee_ID`;
 
@@ -276,21 +286,35 @@ class EmployeesController {
                 const totalIncomeByDepartment = {};
 
                 mssqlResult.forEach((item) => {
-                    const {
+                    let {
                         Employee_ID,
                         Gender,
                         Ethnicity,
                         Department,
                         Salary_Type,
                         Employment_Status,
+                        Shareholder_Status,
                         Pay_Period,
                         Hours_per_Week,
                     } = item;
 
+                    console.log(item);
+
+                    // console.log((!department || Department == department));
+                    // console.log((!shareholder || (shareholder == '1' && item.Shareholder_Status) || (shareholder == '0' && !item.Shareholder_Status)));
+                    // console.log((!gender || (gender == '1' && item.Gender) || (gender === '0' && !item.Gender)));
+                    // console.log((!ethnicity || Ethnicity == ethnicity));
+                    // console.log( Employment_Status == employmentStatus);
+                    console.log((!department || Department === department) &&
+                        (!shareholder || (shareholder == '1' && item.Shareholder_Status) || (shareholder == '0' && !item.Shareholder_Status)) &&
+                        (!gender || (gender == '1' && item.Gender) || (gender == '0' && !item.Gender)) &&
+                        (!ethnicity || Ethnicity === ethnicity) &&
+                        (!employmentStatus || Employment_Status === employmentStatus));
+
                     if (
                         (!department || Department === department) &&
-                        (!shareholder || (shareholder === 'true' && item.Shareholder_Status) || (shareholder === 'false' && !item.Shareholder_Status)) &&
-                        (!gender || (gender === 'true' && item.Gender) || (gender === 'false' && !item.Gender)) &&
+                        (!shareholder || (shareholder == '1' && item.Shareholder_Status) || (shareholder == '0' && !item.Shareholder_Status)) &&
+                        (!gender || (gender == '1' && item.Gender) || (gender == '0' && !item.Gender)) &&
                         (!ethnicity || Ethnicity === ethnicity) &&
                         (!employmentStatus || Employment_Status === employmentStatus)
                     ) {
@@ -306,7 +330,8 @@ class EmployeesController {
                         const jobStartYear = jobStartDate.getFullYear();
                         const jobEndYear = jobEndDate.getFullYear();
 
-                        if (jobStartYear <= toDateYear && jobEndYear >= fromDateYear) {
+                        //jobStartYear <= toDateYear && jobEndYear >= fromDateYear
+                        if (true) {
                             switch (Pay_Period) {
                                 case 'Hourly':
                                     Pay_Period = 1;
@@ -334,7 +359,7 @@ class EmployeesController {
                                 const value = employeeInfo.Value;
 
                                 const totalIncome =
-                                    payRate * value * employmentHoursPerWeek * payPeriod;
+                                    payRate * value * employmentHoursPerWeek * Pay_Period;
 
                                 if (totalIncomeByDepartment[Department]) {
                                     totalIncomeByDepartment[Department] += totalIncome;
@@ -343,6 +368,8 @@ class EmployeesController {
                                 }
                             }
                         }
+                    } else {
+                        console.log('No data');
                     }
                 });
 
@@ -350,7 +377,95 @@ class EmployeesController {
             });
         });
     }
-  
+
+    async getTotalVacationDays(req, res) {
+        const {
+            shareholder,
+            gender,
+            ethnicity,
+            employmentStatus,
+            fromDate,
+            toDate,
+        } = req.body;
+
+        console.log({shareholder,
+            gender,
+            ethnicity,
+            employmentStatus,
+            fromDate,
+            toDate});
+
+        const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, e.Employment_Status, p.Shareholder_Status
+          FROM Personal p,Employment e,Job_History j
+          WHERE p.Employee_ID = e.Employee_ID
+          AND e.Employee_ID = j.Employee_ID
+          AND j.Start_Date <= '${toDate}' AND (j.End_Date IS NULL OR j.End_Date >= '${fromDate}')`;
+
+          console.log(mssqlQuery);
+
+        mssqlDb.query(mssqlQuery,(mssqlErr, mssqlResult) => {
+            if (mssqlErr) {
+                console.log('MSSQL query error:', mssqlErr);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+
+            mssqlResult = mssqlResult.recordset || [];
+            console.log(mssqlResult);
+
+            const mysqlQuery = `SELECT e.idEmployee, e.VacationDays
+            FROM Employee e`;
+
+            mySqlDb.query(mysqlQuery, (mysqlErr, mysqlResult) => {
+                if (mysqlErr) {
+                    console.log('MySQL query error:', mysqlErr);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                    return;
+                }
+
+                const totalVacationDays = {
+                    shareholder: 0,
+                    gender: 0,
+                    ethnicity: 0,
+                    employmentStatus: 0,
+                };
+
+                
+
+                mssqlResult.forEach((item) => {
+                    const {
+                        Employee_ID,
+                        Gender,
+                        Ethnicity,
+                        Employment_Status,
+                        Shareholder_Status,
+                    } = item;
+
+                    if (
+                        (!shareholder || (shareholder == '1' && Shareholder_Status) || (shareholder == '0' && !Shareholder_Status)) &&
+                        (!gender || (gender == '1' && Gender) || (gender == '0' && !Gender)) &&
+                        (!ethnicity || Ethnicity == ethnicity) &&
+                        (!employmentStatus || Employment_Status == employmentStatus)
+                    ) {
+                        const employeeInfo = mysqlResult.find(
+                            (info) => info.idEmployee == Employee_ID
+                        );
+
+                        if (employeeInfo) {
+                            totalVacationDays.shareholder += Shareholder_Status ? employeeInfo.VacationDays : 0;
+                            totalVacationDays.gender += employeeInfo.VacationDays;
+                            totalVacationDays.ethnicity += employeeInfo.VacationDays;
+                            totalVacationDays.employmentStatus += employeeInfo.VacationDays;
+                        }
+                    }
+                });
+
+                res.json(totalVacationDays);
+            });
+        });
+    }
+
+
 }
 
 module.exports = new EmployeesController;

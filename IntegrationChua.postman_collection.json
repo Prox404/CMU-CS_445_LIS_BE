@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "05099a68-2a6d-4ad4-a1d7-52d8ab323aab",
+		"name": "IntegrationChua",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23901035"
+	},
+	"item": [
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "Employee_ID",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "First_Name",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "Last_Name",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "Middle_Initial",
+									"value": "M",
+									"type": "text"
+								},
+								{
+									"key": "Address1",
+									"value": "123 Main St",
+									"type": "text"
+								},
+								{
+									"key": "Address2",
+									"value": "Apt 2",
+									"type": "text"
+								},
+								{
+									"key": "City",
+									"value": "Anytown",
+									"type": "text"
+								},
+								{
+									"key": "State",
+									"value": "CA",
+									"type": "text"
+								},
+								{
+									"key": "Zip",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "Email",
+									"value": "john.doe@email.com",
+									"type": "text"
+								},
+								{
+									"key": "Phone_Number",
+									"value": "5551234567",
+									"type": "text"
+								},
+								{
+									"key": "Drivers_License",
+									"value": "DL1234567890",
+									"type": "text"
+								},
+								{
+									"key": "Marital_Status",
+									"value": "Married",
+									"type": "text"
+								},
+								{
+									"key": "Gender",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "Shareholder_Status",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "Benefit_Plans",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "Ethnicity",
+									"value": "White",
+									"type": "text"
+								},
+								{
+									"key": "EmployeeNumber",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "SSN",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PayRate",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PayRates_idPayRates",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "VacationDays",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "PaidToDate",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PaidLastYear",
+									"value": "0.5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8000/employees/store",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"employees",
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllEmployees",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/employees/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"employees",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total-income",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "department",
+									"value": "Sales",
+									"type": "text"
+								},
+								{
+									"key": "shareholder",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "ethnicity",
+									"value": "White",
+									"type": "text"
+								},
+								{
+									"key": "employmentStatus",
+									"value": "Full-time",
+									"type": "text"
+								},
+								{
+									"key": "fromDate",
+									"value": "01-01-2002",
+									"type": "text"
+								},
+								{
+									"key": "toDate",
+									"value": "12-12-2021",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8000/employees/total-income",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"employees",
+								"total-income"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "shareholder",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "ethnicity",
+									"value": "White",
+									"type": "text"
+								},
+								{
+									"key": "employmentStatus",
+									"value": "Part-time",
+									"type": "text"
+								},
+								{
+									"key": "fromDate",
+									"value": "01-01-2002",
+									"type": "text"
+								},
+								{
+									"key": "toDate",
+									"value": "12-12-2022",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8000/employees/total-vacation-day",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"employees",
+								"total-vacation-day"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

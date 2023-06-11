@@ -1,0 +1,189 @@
+{
+	"info": {
+		"_postman_id": "fedd6139-cbd1-475b-9a03-30b3782832f3",
+		"name": "PayRoll",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23901035"
+	},
+	"item": [
+		{
+			"name": "PayRates",
+			"item": [
+				{
+					"name": "GetAllPayRates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/payrates",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"payrates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "idPayRates",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "PayRateName",
+									"value": "abc",
+									"type": "text"
+								},
+								{
+									"key": "Value",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "TaxPercentage",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PayType",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "PayAmount",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PT_LevelC",
+									"value": "0.5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8000/payrates/store",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"payrates",
+								"store"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "GetAllEmployee",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/employee",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"employee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "InsertEmployee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "idEmployee",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "EmployeeNumber",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "LastName",
+									"value": "Cristiano",
+									"type": "text"
+								},
+								{
+									"key": "FirstName",
+									"value": "Prox",
+									"type": "text"
+								},
+								{
+									"key": "SSN",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PayRate",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PayRates_idPayRates",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "VacationDays",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "PaidToDate",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PaidLastYear",
+									"value": "0.5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8000/employee/store",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"employee",
+								"store"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

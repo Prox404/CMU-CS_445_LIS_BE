@@ -5,8 +5,6 @@ const dotenv = require('dotenv');
 
 // get config vars
 dotenv.config();
-
-
         
         const mysqlPool = mysql.createConnection({
             host: process.env.MYSQL_SERVER_NAME,

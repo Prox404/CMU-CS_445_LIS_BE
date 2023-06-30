@@ -37,14 +37,16 @@ class EmployeesController {
             PayRate,
             PayRates_idPayRates,
             PaidToDate,
-            PaidLastYear
+            PaidLastYear,
+            Birthday,
         } = req.body;
 
         let VacationDays = req.body.VacationDays || 0;
 
         const mySqlQuery = `INSERT INTO Employee (idEmployee, EmployeeNumber, LastName, FirstName, SSN, PayRate, PayRates_idPayRates, VacationDays, PaidToDate, PaidLastYear) VALUES (${Employee_ID}, ${EmployeeNumber}, '${Last_Name}', '${First_Name}', ${SSN}, '${PayRate}', ${PayRates_idPayRates}, ${VacationDays}, ${PaidToDate}, ${PaidLastYear})`;
-        const mssqlQuery = `INSERT INTO personal (Employee_ID, First_Name, Last_Name, Middle_Initial, Address1, Address2, City, State, Zip, Email, Phone_Number, Social_Security_Number, Drivers_License, Marital_Status, Gender, Shareholder_Status, Benefit_Plans, Ethnicity) VALUES ('${Employee_ID}', '${First_Name}', '${Last_Name}', '${Middle_Initial}', '${Address1}', '${Address2}', '${City}', '${State}', '${Zip}', '${Email}', '${Phone_Number}', '${SSN}', '${Drivers_License}', '${Marital_Status}', ${Gender}, ${Shareholder_Status}, '${Benefit_Plans}', '${Ethnicity}')`;
-
+        const mssqlQuery = `INSERT INTO personal (Employee_ID, First_Name, Last_Name, Middle_Initial, Address1, Address2, City, State, Zip, Email, Phone_Number, Social_Security_Number, Drivers_License, Marital_Status, Gender, Shareholder_Status, Benefit_Plans, Ethnicity, Birthday) VALUES ('${Employee_ID}', '${First_Name}', '${Last_Name}', '${Middle_Initial}', '${Address1}', '${Address2}', '${City}', '${State}', '${Zip}', '${Email}', '${Phone_Number}', '${SSN}', '${Drivers_License}', '${Marital_Status}', ${Gender}, ${Shareholder_Status}, '${Benefit_Plans}', '${Ethnicity}', '${Birthday}')`;
+        console.log(mySqlQuery);
+        console.log(mssqlQuery);
         try {
             mySqlDb.query(mySqlQuery, (err, mySQLresult) => {
                 if (err) {
@@ -117,349 +119,445 @@ class EmployeesController {
         }
     }
 
-    //total earnings by shareholder, gender, ethnicity, part-time, and full- time employee to date and the previous year, by department
-    //     async getEmployeeEarnings(req, res) {
-    //         // Thực hiện truy vấn cơ sở dữ liệu để lấy thông tin cần thiết
-    //         // Truy vấn MySQL
-    //         const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, j.Department, j.Salary_Type, j.Pay_Period, j.Hours_per_Week, e.Employment_Status
-    //         FROM Personal p , Employment e , Job_History j
-    //         WHERE p.Employee_ID = e.Employee_ID AND e.Employee_ID = j.Employee_ID`;
-
-    //         mssqlDb.query(mssqlQuery, (mssqlErr, mssqlResult) => {
-    //             if (mssqlErr) {
-    //                 console.log('MySQL query error:', mssqlErr);
-    //                 res.status(500).json({ error: 'Internal Server Error' });
-    //                 return;
-    //             }
-
-    //             mssqlResult = mssqlResult.recordset || [];
-
-    //             console.log('MsSQL query result:', mssqlResult);
-
-    //             // Truy vấn MSSQL
-    //             const mysqlQuery = `SELECT e.idEmployee, e.EmployeeNumber, e.PayRate, p.Value
-    //     FROM employee e, payrates p
-    //    WHERE e.PayRates_idPayRates = p.idPayRates`;
-
-    //             mySqlDb.query(mysqlQuery, (mysqlErr, mysqlResult) => {
-    //                 if (mssqlErr) {
-    //                     console.log('MySQL query error:', mssqlErr);
-    //                     res.status(500).json({ error: 'Internal Server Error' });
-    //                     return;
-    //                 }
-
-    //                 console.log('MySQL query result:', mysqlResult);
-
-    //                 const totalIncomeByDepartment = {};
-
-    //                 // Lặp qua kết quả từ MsSQL
-    //                 mssqlResult.forEach((item) => {
-    //                     let employeeID = item.Employee_ID;
-    //                     let gender = item.Gender;
-    //                     let ethnicity = item.Ethnicity;
-    //                     let department = item.Department;
-    //                     let salaryType = item.Salary_Type;
-    //                     let Employment_Status = item.Employment_Status;
-    //                     let payPeriod = item.Pay_Period;
-    //                     let hoursPerWeek = item.Hours_per_Week;
-
-    //                     console.log({
-    //                         employeeID,
-    //                         gender,
-    //                         ethnicity,
-    //                         department,
-    //                         salaryType,
-    //                         payPeriod,
-    //                         hoursPerWeek,
-    //                         Employment_Status
-    //                     })
-
-    //                     switch (payPeriod){
-    //                         case 'Hourly':
-    //                             payPeriod = 1;
-    //                             break;
-    //                         case 'Weekly':
-    //                             payPeriod = 52;
-    //                             break;
-    //                         case 'Bi-Weekly':
-    //                             payPeriod = 26;
-    //                             break;
-    //                         case 'Monthly':
-    //                             payPeriod = 12;
-    //                             break;
-    //                         default:
-    //                             payPeriod = 1;
-    //                     }
-    //                     //   console.log(Employment_Status == 'Part-time');
-    //                     // Kiểm tra điều kiện và tính toán thu nhập tương ứng
-    //                     if (Employment_Status == 'Full-time') {
-    //                         console.log('Full time')
-    //                         // Tính toán thu nhập cho nhân viên làm việc toàn thời gian
-    //                         // Lấy thông tin về mức lương từ MSSQL
-    //                         const employeeInfo = mysqlResult.find((info) => info.idEmployee == employeeID);
-    //                         if (employeeInfo) {
-    //                             console.log('employeeInfo: ', employeeInfo)
-    //                             const payRate = employeeInfo.PayRate;
-    //                             const value = employeeInfo.Value;
-
-
-
-    //                             // Tính toán tổng thu nhập
-    //                             const totalIncome = payRate * value * hoursPerWeek * payPeriod;
-    //                             console.log('totalIncome: ', totalIncome)
-    //                             if (totalIncomeByDepartment[department]) {
-    //                                 totalIncomeByDepartment[department] += totalIncome;
-    //                             } else {
-    //                                 totalIncomeByDepartment[department] = totalIncome;
-    //                             }
-    //                         }
-    //                     } else if (Employment_Status == 'Part-time') {
-    //                         console.log('Part-time')
-    //                         // Tính toán thu nhập cho nhân viên làm việc bán thời gian
-    //                         const employeeInfo = mysqlResult.find((info) => info.EmployeeNumber === employeeID);
-    //                         if (employeeInfo) {
-    //                             const payRate = employeeInfo.PayRate;
-    //                             const value = employeeInfo.Value;
-
-    //                             // Tính toán tổng thu nhập
-    //                             const totalIncome = payRate * value * hoursPerWeek * payPeriod;
-    //                             if (totalIncomeByDepartment[department]) {
-    //                                 totalIncomeByDepartment[department] += totalIncome;
-    //                             } else {
-    //                                 totalIncomeByDepartment[department] = totalIncome;
-    //                             }
-    //                         }
-    //                         // Tiếp tục xử lý tương tự như trên cho nhân viên làm việc bán thời gian
-    //                     }
-    //                 });
-
-    //                 // Trả về kết quả tổng thu nhập theo từng phòng ban
-    //                 res.json(totalIncomeByDepartment);
-    //             });
-    //         });
-    //     }
     async getEmployeeEarnings(req, res) {
-        let {
-          department,
-          shareholder,
-          gender,
-          ethnicity,
-          employmentStatus,
-          fromDate,
-          toDate,
-        } = req.body;
-      
-        console.log({
-          department,
-          shareholder,
-          gender,
-          ethnicity,
-          employmentStatus,
-          fromDate,
-          toDate,
-        });
-      
-        const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, j.Department, j.Salary_Type, j.Pay_Period, j.Hours_per_Week, e.Employment_Status, p.Shareholder_Status
-          FROM Personal p, Employment e, Job_History j
-          WHERE p.Employee_ID = e.Employee_ID AND e.Employee_ID = j.Employee_ID`;
-      
-        mssqlDb.query(mssqlQuery, (mssqlErr, mssqlResult) => {
-          if (mssqlErr) {
-            console.log('MSSQL query error:', mssqlErr);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-          }
-      
-          mssqlResult = mssqlResult.recordset || [];
-      
-          const mysqlQuery = `SELECT e.idEmployee, e.EmployeeNumber, e.PayRate, p.Value
-            FROM Employee e, PayRates p
-            WHERE e.PayRates_idPayRates = p.idPayRates`;
-      
-          mySqlDb.query(mysqlQuery, (mysqlErr, mysqlResult) => {
-            if (mysqlErr) {
-              console.log('MySQL query error:', mysqlErr);
-              res.status(500).json({ error: 'Internal Server Error' });
-              return;
-            }
-      
-            const totalIncomeByDepartment = {};
-      
-            mssqlResult.forEach((item) => {
-              let {
-                Employee_ID,
-                Gender,
-                Ethnicity,
-                Department,
-                Salary_Type,
-                Employment_Status,
-                Shareholder_Status,
-                Pay_Period,
-                Hours_per_Week,
-              } = item;
-      
-              console.log(item);
-      
-              if (
-                (!department || Department === department) &&
-                (!shareholder || (shareholder === '1' && item.Shareholder_Status) || (shareholder === '0' && !item.Shareholder_Status)) &&
-                (!gender || (gender === '1' && item.Gender) || (gender === '0' && !item.Gender)) &&
-                (!ethnicity || Ethnicity === ethnicity) &&
-                (!employmentStatus || Employment_Status === employmentStatus)
-              ) {
-                const fromDateObj = new Date(fromDate);
-                const toDateObj = new Date(toDate);
-      
-                const fromDateYear = fromDateObj.getFullYear();
-                const toDateYear = toDateObj.getFullYear();
-      
-                const jobStartDate = new Date(item.Start_Date);
-                const jobEndDate = item.End_Date ? new Date(item.End_Date) : new Date();
-      
-                const jobStartYear = jobStartDate.getFullYear();
-                const jobEndYear = jobEndDate.getFullYear();
-      
-                //jobStartYear <= toDateYear && jobEndYear >= fromDateYear
-                if (true) {
-                  switch (Pay_Period) {
-                    case 'Hourly':
-                      Pay_Period = 1;
-                      break;
-                    case 'Weekly':
-                      Pay_Period = 52;
-                      break;
-                    case 'Bi-Weekly':
-                      Pay_Period = 26;
-                      break;
-                    case 'Monthly':
-                      Pay_Period = 12;
-                      break;
-                    default:
-                      Pay_Period = 1;
-                  }
-                  const employmentHoursPerWeek = Hours_per_Week;
-      
-                  const employeeInfo = mysqlResult.find(
-                    (info) => info.idEmployee == Employee_ID
-                  );
-      
-                  if (employeeInfo) {
-                    const payRate = employeeInfo.PayRate;
-                    const value = employeeInfo.Value;
-      
-                    const totalIncome =
-                      payRate * value * employmentHoursPerWeek * Pay_Period;
-      
-                    if (totalIncomeByDepartment[Department]) {
-                      totalIncomeByDepartment[Department] += totalIncome;
+        try {
+            // Lấy dữ liệu từ cơ sở dữ liệu MySQL (Payroll)
+            const mysqlQuery = `
+                SELECT payrates.Value, employee.PayRate, employee.idEmployee
+                FROM payrates, employee
+                WHERE payrates.idPayRates = employee.PayRates_idPayRates
+            `;
+
+            const mysqlData = await new Promise((resolve, reject) => {
+                mySqlDb.query(mysqlQuery, (error, results) => {
+                    if (error) {
+                        reject(error);
                     } else {
-                      totalIncomeByDepartment[Department] = totalIncome;
+                        resolve(results);
                     }
-                  }
-                }
-              } else {
-                console.log('No data');
-              }
+                });
             });
-      
+            console.log(mysqlData);
+
+            // Lấy dữ liệu từ cơ sở dữ liệu MSSQL (HR)
+            const mssqlQuery = `
+            SELECT Job_History.Hours_per_Week, Job_History.Pay_Period, Job_History.Employee_ID,Job_History.Department,  Personal.Gender, Personal.Ethnicity, Employment.Employment_Status
+            FROM Job_History ,Personal, Employment
+            WHERE Job_History.Employee_ID = Personal.Employee_ID
+            AND Job_History.Employee_ID = Employment.Employee_ID
+            `;
+
+            const mssqlData = await new Promise((resolve, reject) => {
+                mssqlDb.query(mssqlQuery, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results.recordset);
+                    }
+                });
+            });
+
+            console.log(mssqlData);
+
+            // Khởi tạo đối tượng data để lưu tổng thu nhập cho từng yếu tố
+            const data = {
+                department: {},
+                gender: {},
+                ethnicity: {},
+                employmentStatus: {},
+            };
+
+            // Lặp qua từng bản ghi và tính tổng thu nhập
+            for (const mysqlRow of mysqlData) {
+                const employeeId = mysqlRow.idEmployee;
+                const matchingMssqlRow = mssqlData.find((mssqlRow) => mssqlRow.Employee_ID == employeeId);
+
+                if (matchingMssqlRow) {
+                    console.log('matchingMssqlRow: ', matchingMssqlRow);
+                    const department = matchingMssqlRow.Department;
+                    const gender = matchingMssqlRow.Gender;
+                    const ethnicity = matchingMssqlRow.Ethnicity;
+                    const employmentStatus = matchingMssqlRow.Employment_Status;
+                    let payPeriod = matchingMssqlRow.Pay_Period;
+
+                    if (!data.department[department]) {
+                        data.department[department] = 0;
+                    }
+                    if (!data.gender[gender]) {
+                        data.gender[gender] = 0;
+                    }
+                    if (!data.ethnicity[ethnicity]) {
+                        data.ethnicity[ethnicity] = 0;
+                    }
+                    if (!data.employmentStatus[employmentStatus]) {
+                        data.employmentStatus[employmentStatus] = 0;
+                    }
+
+                    switch (payPeriod) {
+                        case 'Hourly':
+                            payPeriod = 1;
+                            break;
+                        case 'Weekly':
+                            payPeriod = 52;
+                            break;
+                        case 'Bi-Weekly':
+                            payPeriod = 26;
+                            break;
+                        case 'Monthly':
+                            payPeriod = 12;
+                            break;
+                        default:
+                            payPeriod = 1;
+                    }
+
+                    // Tính tổng thu nhập
+                    const earnings = mysqlRow.Value * mysqlRow.PayRate * matchingMssqlRow.Hours_per_Week * payPeriod;
+                    data.department[department] += earnings;
+                    data.gender[gender] += earnings;
+                    data.ethnicity[ethnicity] += earnings;
+                    data.employmentStatus[employmentStatus] += earnings;
+                }
+            }
+
+            console.log('Data:', data);
             res.status(200).json({
                 message: 'Success',
-                data: totalIncomeByDepartment,
+                data,
             });
-          });
-        });
-      }
-      
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({
+                message: 'Error',
+                error,
+            });
+        }
+    }
 
-      async getTotalVacationDays(req, res) {
-        const {
-          shareholder,
-          gender,
-          ethnicity,
-          employmentStatus,
-          fromDate,
-          toDate,
-        } = req.body;
-      
-        console.log({
-          shareholder,
-          gender,
-          ethnicity,
-          employmentStatus,
-          fromDate,
-          toDate,
-        });
-      
-        const mssqlQuery = `SELECT p.Employee_ID, p.Gender, p.Ethnicity, e.Employment_Status, p.Shareholder_Status
-          FROM Personal p, Employment e, Job_History j
-          WHERE p.Employee_ID = e.Employee_ID
-          AND e.Employee_ID = j.Employee_ID
-          ${toDate ? `AND j.Start_Date <= '${toDate}'` : ''}
-          ${fromDate ? `AND (j.End_Date IS NULL OR j.End_Date >= '${fromDate}')` : ''}`;
-      
-        console.log(mssqlQuery);
-      
-        mssqlDb.query(mssqlQuery, (mssqlErr, mssqlResult) => {
-          if (mssqlErr) {
-            console.log('MSSQL query error:', mssqlErr);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-          }
-      
-          mssqlResult = mssqlResult.recordset || [];
-          console.log(mssqlResult);
-      
-          const mysqlQuery = `SELECT e.idEmployee, e.VacationDays
-            FROM Employee e`;
-      
-          mySqlDb.query(mysqlQuery, (mysqlErr, mysqlResult) => {
-            if (mysqlErr) {
-              console.log('MySQL query error:', mysqlErr);
-              res.status(500).json({ error: 'Internal Server Error' });
-              return;
-            }
-      
-            const totalVacationDays = {
-              shareholder: 0,
-              gender: 0,
-              ethnicity: 0,
-              employmentStatus: 0,
+    async getTotalVacationDays(req, res) {
+        try {
+            const mysqlQuery = `
+              SELECT idEmployee, VacationDays
+              FROM employee
+            `;
+
+            const mysqlData = await new Promise((resolve, reject) => {
+                mySqlDb.query(mysqlQuery, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            });
+
+            const mssqlQuery = `
+              SELECT j.Employee_ID, j.Department, p.Gender, p.Ethnicity, emp.Employment_Status
+              FROM Job_History AS j
+              INNER JOIN Personal AS p ON j.Employee_ID = p.Employee_ID
+              INNER JOIN Employment AS emp ON j.Employee_ID = emp.Employee_ID
+            `;
+
+            const mssqlData = await new Promise((resolve, reject) => {
+                mssqlDb.query(mssqlQuery, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results.recordset);
+                    }
+                });
+            });
+
+            const leaveDays = {
+                department: {},
+                gender: {},
+                ethnicity: {},
+                employmentStatus: {},
             };
-      
-            mssqlResult.forEach((item) => {
-              const {
-                Employee_ID,
-                Gender,
-                Ethnicity,
-                Employment_Status,
-                Shareholder_Status,
-              } = item;
-      
-              if (
-                (!shareholder || (shareholder === '1' && Shareholder_Status) || (shareholder === '0' && !Shareholder_Status)) &&
-                (!gender || (gender === '1' && Gender) || (gender === '0' && !Gender)) &&
-                (!ethnicity || Ethnicity === ethnicity) &&
-                (!employmentStatus || Employment_Status === employmentStatus)
-              ) {
-                const employeeInfo = mysqlResult.find(
-                  (info) => info.idEmployee == Employee_ID
-                );
-      
-                if (employeeInfo) {
-                  totalVacationDays.shareholder += Shareholder_Status ? employeeInfo.VacationDays : 0;
-                  totalVacationDays.gender += employeeInfo.VacationDays;
-                  totalVacationDays.ethnicity += employeeInfo.VacationDays;
-                  totalVacationDays.employmentStatus += employeeInfo.VacationDays;
-                }
-              }
-            });
-      
-            res.json(totalVacationDays);
-          });
-        });
-      }
-      
 
+            for (const mysqlRow of mysqlData) {
+                const employeeId = mysqlRow.idEmployee;
+                const matchingMssqlRow = mssqlData.find((mssqlRow) => mssqlRow.Employee_ID === employeeId);
+
+                if (matchingMssqlRow) {
+                    const department = matchingMssqlRow.Department;
+                    const gender = matchingMssqlRow.Gender;
+                    const ethnicity = matchingMssqlRow.Ethnicity;
+                    const employmentStatus = matchingMssqlRow.Employment_Status;
+                    const vacationDays = mysqlRow.VacationDays;
+
+                    if (!leaveDays.department[department]) {
+                        leaveDays.department[department] = 0;
+                    }
+                    if (!leaveDays.gender[gender]) {
+                        leaveDays.gender[gender] = 0;
+                    }
+                    if (!leaveDays.ethnicity[ethnicity]) {
+                        leaveDays.ethnicity[ethnicity] = 0;
+                    }
+                    if (!leaveDays.employmentStatus[employmentStatus]) {
+                        leaveDays.employmentStatus[employmentStatus] = 0;
+                    }
+
+                    leaveDays.department[department] += vacationDays;
+                    leaveDays.gender[gender] += vacationDays;
+                    leaveDays.ethnicity[ethnicity] += vacationDays;
+                    leaveDays.employmentStatus[employmentStatus] += vacationDays;
+                }
+            }
+
+            console.log('Leave Days:', leaveDays);
+            res.status(200).json({
+                message: 'Success',
+                data: leaveDays,
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({
+                message: 'Error',
+                error,
+            });
+        }
+    }
+
+    async calculateAverageBenefitsPaid(req, res) {
+        try {
+            // Get shareholders and non-shareholders from the Personal table in the HR database
+            const shareholdersQuery = 'SELECT Employee_ID FROM Personal WHERE Shareholder_Status = 1';
+            const nonShareholdersQuery = 'SELECT Employee_ID FROM Personal WHERE Shareholder_Status = 0';
+
+            const [shareholdersResult, nonShareholdersResult] = await Promise.all([
+                mssqlDb.query(shareholdersQuery),
+                mssqlDb.query(nonShareholdersQuery)
+            ]);
+            const shareholders = shareholdersResult.recordset.map((row) => row.Employee_ID);
+            const nonShareholders = nonShareholdersResult.recordset.map((row) => row.Employee_ID);
+
+            let shareholderAverageBenefits = {};
+            // console.log("shareholders:", shareholders);
+            if (shareholders.length > 0) {
+
+                // Calculate the average benefits paid to shareholders by benefits plan
+                const shareholderBenefitsQuery = `
+            SELECT Plan_Name, AVG(Deductable) AS Average_Benefits
+            FROM Benefit_Plans
+            WHERE Benefit_Plan_ID IN (
+              SELECT Benefit_Plans
+              FROM Personal
+              WHERE Employee_ID IN (${shareholders.join(',')})
+            )
+            GROUP BY Plan_Name
+          `;
+                //   console.log(shareholderBenefitsQuery);
+                const shareholderBenefitsResult = await mssqlDb.query(shareholderBenefitsQuery);
+                console.log(shareholderBenefitsResult);
+                shareholderAverageBenefits = shareholderBenefitsResult.recordset.reduce(
+                    (averageBenefits, row) => {
+                        averageBenefits[row.Plan_Name] = row.Average_Benefits;
+                        return averageBenefits;
+                    },
+                    {}
+                );
+            }
+
+            let nonShareholderAverageBenefits = {};
+
+            if (nonShareholders.length > 0) {
+                console.log("nonShareholders:", nonShareholders);
+                const nonShareholderBenefitsQuery = `
+                    SELECT Plan_Name, AVG(Deductable) AS Average_Benefits
+                    FROM Benefit_Plans
+                    WHERE Benefit_Plan_ID IN (
+                    SELECT Benefit_Plans
+                    FROM Personal
+                    WHERE Employee_ID IN (${nonShareholders.join(',')})
+            )
+            GROUP BY Plan_Name
+          `;
+                console.log(nonShareholderBenefitsQuery);
+                const nonShareholderBenefitsResult = await mssqlDb.query(nonShareholderBenefitsQuery);
+                nonShareholderAverageBenefits = nonShareholderBenefitsResult.recordset.reduce(
+                    (averageBenefits, row) => {
+                        averageBenefits[row.Plan_Name] = row.Average_Benefits;
+                        return averageBenefits;
+                    },
+                    {}
+                );
+            }
+
+            // Calculate the average benefits paid to non-shareholders by benefits plan
+
+
+            // Combine the results for shareholders and non-shareholders
+            const averageBenefitsPaid = {
+                shareholders: shareholderAverageBenefits,
+                nonShareholders: nonShareholderAverageBenefits
+            };
+
+            res.status(200).json({
+                message: 'Success',
+                data: averageBenefitsPaid,
+            });
+        } catch (error) {
+            // throw error;
+            console.error('Error:', error);
+            res.status(500).json({
+                message: 'Error',
+                error,
+            });
+        }
+    }
+
+    // async checkHiringAnniversary(req, res) {
+    //     const { daysThreshold } = req.body;
+    //     console.log(daysThreshold);
+    //     try {
+    //         // Retrieve employee's hiring date from MySQL database
+    //         const mssqlQuery0 = `SELECT * FROM Employment`;
+    //         const mssqlResult0 = await mssqlDb.query(mssqlQuery0);
+    //         const hireDate = mssqlResult0.recordset[0].Hire_Date;
+    //         console.log(hireDate);
+
+    //         // Retrieve current date from MSSQL database
+    //         const mssqlQuery = `SELECT GETDATE() AS CurrentDate`;
+    //         const mssqlResult = await mssqlDb.query(mssqlQuery);
+    //         const currentDate = mssqlResult.recordset[0].CurrentDate;
+
+    //         // Calculate the number of days between the current date and the employee's hiring anniversary
+    //         const hiringAnniversary = new Date(currentDate.getFullYear(), hireDate.getMonth(), hireDate.getDate());
+    //         const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    //         const daysDifference = Math.round((hiringAnniversary - currentDate) / millisecondsPerDay);
+
+    //         // Check if the employee is within the specified number of days of their hiring anniversary
+    //         const isWithinThreshold = Math.abs(daysDifference) <= daysThreshold;
+
+    //         res.status(200).json({
+    //             message: 'Success',
+    //             data: isWithinThreshold,
+    //         });
+    //     } catch (error) {
+    //         console.error('Error checking hiring anniversary:', error);
+    //         // throw error;
+    //         res.status(500).json({
+    //             message: 'Error',
+    //             error,
+    //         });
+    //     }
+    // }
+
+    async checkHiringAnniversary(req, res) {
+        const { daysThreshold } = req.query;
+
+        try {
+            // Retrieve current date from MSSQL database
+            const mssqlQuery = `SELECT GETDATE() AS CurrentDate`;
+            const mssqlResult = await mssqlDb.query(mssqlQuery);
+            const currentDate = mssqlResult.recordset[0].CurrentDate;
+
+            let employees = [];
+
+            if (daysThreshold) {
+                // Calculate the hiring anniversary threshold date based on the current date and daysThreshold
+                const hiringAnniversaryThreshold = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + daysThreshold);
+
+                // Retrieve employees who are within the specified number of days of their hiring anniversary
+                const mssqlQuery2 = `SELECT Employment.Employee_ID, Employment_Status, Hire_Date, First_Name, Last_Name, Gender, Shareholder_Status FROM Employment, Personal WHERE Employment.Employee_ID = Personal.Employee_ID`;
+                const mssqlResult2 = await mssqlDb.query(mssqlQuery2);
+                employees = mssqlResult2.recordset.filter((employee) => {
+                    const hireDate = employee.Hire_Date;
+                    const hiringAnniversary = new Date(currentDate.getFullYear(), hireDate.getMonth(), hireDate.getDate());
+                    const daysDifference = Math.round((hiringAnniversary - currentDate) / (24 * 60 * 60 * 1000));
+                    return Math.abs(daysDifference) <= daysThreshold;
+                });
+            } else {
+                // Retrieve all employees
+                const mssqlQuery2 = `SELECT Employment.Employee_ID, Employment_Status, Hire_Date, First_Name, Last_Name, Gender, Shareholder_Status FROM Employment, Personal WHERE Employment.Employee_ID = Personal.Employee_ID`;
+                const mssqlResult2 = await mssqlDb.query(mssqlQuery2);
+                employees = mssqlResult2.recordset;
+            }
+
+            res.status(200).json({
+                message: 'Success',
+                data: employees,
+            });
+        } catch (error) {
+            console.error('Error checking hiring anniversary:', error);
+            res.status(500).json({
+                message: 'Error',
+                error,
+            });
+        }
+    }
+
+    async checkVacationDays(req, res) {
+        const { daysThreshold } = req.query;
+        let mysqlQuery = `SELECT * FROM employee`;
+
+        if (daysThreshold) {
+            mysqlQuery += ` WHERE VacationDays >= ${daysThreshold}`;
+        }
+
+        try {
+            // Retrieve employees from the MySQL database
+            const mysqlResult = await new Promise((resolve, reject) => {
+                mySqlDb.query(mysqlQuery, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            });
+
+            const employees = mysqlResult;
+            console.log(employees);
+
+            res.status(200).json({
+                message: 'Success',
+                data: employees,
+            });
+        } catch (error) {
+            console.error('Error checking vacation days:', error);
+            res.status(500).json({
+                message: 'Error',
+                error,
+            });
+        }
+    }
+
+
+    async getEmployeesWithBirthdays(req, res) {
+        const { month } = req.query;
+        try {
+            // Retrieve employees with birthdays within the specified month from the MSSQL database
+            let mssqlQuery = 'SELECT * FROM Personal';
+
+            if (month) {
+                mssqlQuery += ` WHERE MONTH(Birthday) = ${month}`;
+            }
+
+            const mssqlResult = await new Promise((resolve, reject) => {
+                mssqlDb.query(mssqlQuery, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results.recordset);
+                    }
+                });
+            });
+
+            // Combine the employees from both databases
+            res.status(200).json({
+                message: 'Success',
+                data: mssqlResult,
+            });
+        } catch (error) {
+            console.error('Error retrieving employees with birthdays:', error);
+            res.status(500).json({
+                message: 'Error',
+                error,
+            });
+        }
+    }
 
 }
 

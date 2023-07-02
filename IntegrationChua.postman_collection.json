@@ -19,7 +19,7 @@
 							"urlencoded": [
 								{
 									"key": "Employee_ID",
-									"value": "4",
+									"value": "5",
 									"type": "text"
 								},
 								{
@@ -104,7 +104,7 @@
 								},
 								{
 									"key": "EmployeeNumber",
-									"value": "4",
+									"value": "5",
 									"type": "text"
 								},
 								{
@@ -140,11 +140,11 @@
 							]
 						},
 						"url": {
-							"raw": "localhost:8000/employees/store",
+							"raw": "localhost:9000/employees/store",
 							"host": [
 								"localhost"
 							],
-							"port": "8000",
+							"port": "9000",
 							"path": [
 								"employees",
 								"store"
@@ -174,8 +174,11 @@
 				},
 				{
 					"name": "Total-income",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "urlencoded",
@@ -183,46 +186,53 @@
 								{
 									"key": "department",
 									"value": "Sales",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "shareholder",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "gender",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "ethnicity",
 									"value": "White",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "employmentStatus",
 									"value": "Full-time",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "fromDate",
 									"value": "01-01-2002",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "toDate",
 									"value": "12-12-2021",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "localhost:8000/employees/total-income",
+							"raw": "localhost:9000/employees/total-income",
 							"host": [
 								"localhost"
 							],
-							"port": "8000",
+							"port": "9000",
 							"path": [
 								"employees",
 								"total-income"
@@ -232,9 +242,12 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "total-vacation-day",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "urlencoded",
@@ -242,45 +255,326 @@
 								{
 									"key": "shareholder",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "gender",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "ethnicity",
 									"value": "White",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "employmentStatus",
 									"value": "Part-time",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "fromDate",
 									"value": "01-01-2002",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "toDate",
 									"value": "12-12-2022",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:9000/employees/total-vacation-day",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"employees",
+								"total-vacation-day"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "average-benefit-plan",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9000/employees/average-benefit-plan",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"employees",
+								"average-benefit-plan"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check-hiring-anniversary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9000/employees/check-hiring-anniversary?daysThreshold=117",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"employees",
+								"check-hiring-anniversary"
+							],
+							"query": [
+								{
+									"key": "daysThreshold",
+									"value": "117"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check-vacation-days",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9000/employees/check-vacation-days?daysThreshold=1",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"employees",
+								"check-vacation-days"
+							],
+							"query": [
+								{
+									"key": "daysThreshold",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-employee-within-month",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9000/employees/get-employee-within-month?month=7",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"employees",
+								"get-employee-within-month"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:9000/employees/delete?Employee_ID=1",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"employees",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "Employee_ID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getEmployeeById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9000/employees/get/5",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"employees",
+								"get",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Employee",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "Employee_ID",
+									"value": "9",
+									"type": "text"
+								},
+								{
+									"key": "First_Name",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "Last_Name",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "Middle_Initial",
+									"value": "M",
+									"type": "text"
+								},
+								{
+									"key": "Address1",
+									"value": "123 Main St",
+									"type": "text"
+								},
+								{
+									"key": "Address2",
+									"value": "Apt 2",
+									"type": "text"
+								},
+								{
+									"key": "City",
+									"value": "Anytown",
+									"type": "text"
+								},
+								{
+									"key": "State",
+									"value": "CA",
+									"type": "text"
+								},
+								{
+									"key": "Zip",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "Email",
+									"value": "john.doe@email.com",
+									"type": "text"
+								},
+								{
+									"key": "Phone_Number",
+									"value": "5551234567",
+									"type": "text"
+								},
+								{
+									"key": "Drivers_License",
+									"value": "DL1234567890",
+									"type": "text"
+								},
+								{
+									"key": "Marital_Status",
+									"value": "Married",
+									"type": "text"
+								},
+								{
+									"key": "Gender",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "Shareholder_Status",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "Benefit_Plans",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "Ethnicity",
+									"value": "White",
+									"type": "text"
+								},
+								{
+									"key": "EmployeeNumber",
+									"value": "9",
+									"type": "text"
+								},
+								{
+									"key": "SSN",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PayRate",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PayRates_idPayRates",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "VacationDays",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "PaidToDate",
+									"value": "0.5",
+									"type": "text"
+								},
+								{
+									"key": "PaidLastYear",
+									"value": "0.5",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "localhost:8000/employees/total-vacation-day",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"employees",
-								"total-vacation-day"
-							]
+							"raw": ""
 						}
 					},
 					"response": []

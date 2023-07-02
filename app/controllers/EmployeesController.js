@@ -81,6 +81,180 @@ class EmployeesController {
 
     }
 
+    async deleteEmployee(req, res) {
+        const { Employee_ID } = req.query;
+        // console.log(Employee_ID);
+    
+        try {
+            // Xóa bản ghi từ các bảng phụ trước
+            const deleteEmergencyContactsQuery = `DELETE FROM Emergency_Contacts WHERE Employee_ID = ${Employee_ID}`;
+            const deleteJobHistoryQuery = `DELETE FROM Job_History WHERE Employee_ID = ${Employee_ID}`;
+            const deleteEmploymentQuery = `DELETE FROM Employment WHERE Employee_ID = ${Employee_ID}`;
+            console.log(deleteEmergencyContactsQuery);
+            console.log(deleteJobHistoryQuery);
+            console.log(deleteEmploymentQuery);
+    
+            mssqlDb.query(deleteEmergencyContactsQuery, (err, emergencyContactsResult) => {
+                if (err) {
+                    res.send({
+                        status: 500,
+                        data: err
+                    });
+                } else {
+                    mssqlDb.query(deleteJobHistoryQuery, (err, jobHistoryResult) => {
+                        if (err) {
+                            res.send({
+                                status: 500,
+                                data: err
+                            });
+                        } else {
+                            mssqlDb.query(deleteEmploymentQuery, (err, employmentResult) => {
+                                if (err) {
+                                    res.send({
+                                        status: 500,
+                                        data: err
+                                    });
+                                } else {
+                                    // Xóa bản ghi từ bảng Personal
+                                    const deletePersonalQuery = `DELETE FROM employee WHERE idEmployee = ${Employee_ID}`;
+                                    console.log(deletePersonalQuery);
+                                    mySqlDb.query(deletePersonalQuery, (err, personalResult) => {
+                                        if (err) {
+                                            res.send({
+                                                status: 500,
+                                                data: err
+                                            });
+                                        } else {
+                                            // Xóa bản ghi từ bảng Employee
+                                            const deleteEmployeeQuery = `DELETE FROM Employee WHERE idEmployee = ${Employee_ID}`;
+                                            console.log(deleteEmployeeQuery);
+                                            mySqlDb.query(deleteEmployeeQuery, (err, employeeResult) => {
+                                                if (err) {
+                                                    res.send({
+                                                        status: 500,
+                                                        data: err
+                                                    });
+                                                } else {
+                                                    res.send({
+                                                        status: 200,
+                                                        data: {
+                                                            employeeResult,
+                                                            personalResult,
+                                                            employmentResult,
+                                                            jobHistoryResult,
+                                                            emergencyContactsResult
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async updateEmployee(req, res) {
+        const {
+            Employee_ID,
+            First_Name,
+            Last_Name,
+            Middle_Initial,
+            Address1,
+            Address2,
+            City,
+            State,
+            Zip,
+            Email,
+            Phone_Number,
+            Drivers_License,
+            Marital_Status,
+            Gender,
+            Shareholder_Status,
+            Benefit_Plans,
+            Ethnicity,
+            EmployeeNumber,
+            SSN,
+            PayRate,
+            PayRates_idPayRates,
+            PaidToDate,
+            PaidLastYear,
+            Birthday,
+        } = req.body;
+    
+        let VacationDays = req.body.VacationDays || 0;
+    
+        try {
+            // Cập nhật bản ghi trong bảng Personal
+            const updatePersonalQuery = `UPDATE Personal SET 
+                First_Name = '${First_Name}',
+                Last_Name = '${Last_Name}',
+                Middle_Initial = '${Middle_Initial}',
+                Address1 = '${Address1}',
+                Address2 = '${Address2}',
+                City = '${City}',
+                State = '${State}',
+                Zip = '${Zip}',
+                Email = '${Email}',
+                Phone_Number = '${Phone_Number}',
+                Drivers_License = '${Drivers_License}',
+                Marital_Status = '${Marital_Status}',
+                Gender = ${Gender},
+                Shareholder_Status = ${Shareholder_Status},
+                Benefit_Plans = '${Benefit_Plans}',
+                Ethnicity = '${Ethnicity}',
+                Birthday = '${Birthday}'
+                WHERE Employee_ID = ${Employee_ID}`;
+    
+            mssqlDb.query(updatePersonalQuery, (err, personalResult) => {
+                if (err) {
+                    res.send({
+                        status: 500,
+                        data: err
+                    });
+                } else {
+                    // Cập nhật bản ghi trong bảng Employee
+                    const updateEmployeeQuery = `UPDATE Employee SET
+                        EmployeeNumber = ${EmployeeNumber},
+                        LastName = '${Last_Name}',
+                        FirstName = '${First_Name}',
+                        SSN = ${SSN},
+                        PayRate = '${PayRate}',
+                        PayRates_idPayRates = ${PayRates_idPayRates},
+                        VacationDays = ${VacationDays},
+                        PaidToDate = ${PaidToDate},
+                        PaidLastYear = ${PaidLastYear}
+                        WHERE idEmployee = ${Employee_ID}`;
+    
+                    mySqlDb.query(updateEmployeeQuery, (err, employeeResult) => {
+                        if (err) {
+                            res.send({
+                                status: 500,
+                                data: err
+                            });
+                        } else {
+                            res.send({
+                                status: 200,
+                                data: {
+                                    employeeResult,
+                                    personalResult
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     async getAllUser(req, res) {
         const mysqlQuery = 'SELECT * FROM Employee';
         const mssqlQuery = 'SELECT * FROM personal';
@@ -115,6 +289,52 @@ class EmployeesController {
             );
         }
         catch (err) {
+            console.log(err);
+        }
+    }
+
+    async getUserById(req, res) {
+        const employeeId = req.params.id; // Lấy ID nhân viên từ tham số đường dẫn
+    
+        const mysqlQuery = `SELECT * FROM Employee WHERE idEmployee = ${employeeId}`;
+        const mssqlQuery = `SELECT * FROM personal WHERE Employee_ID = ${employeeId}`;
+    
+        try {
+            mySqlDb.query(mysqlQuery, (err, mySQLresult) => {
+                if (err) {
+                    res.send({
+                        status: 500,
+                        data: err
+                    });
+                } else {
+                    mssqlDb.query(mssqlQuery, (err, msSQLresult) => {
+                        if (err) {
+                            res.send({
+                                status: 500,
+                                data: err
+                            });
+                        } else {
+                            const mergedResult = mySQLresult.map(mysqlObj => {
+                                const mssqlObj = msSQLresult.recordsets[0].find(mssqlObj => mssqlObj.Employee_ID === mysqlObj.idEmployee);
+                                return { ...mysqlObj, ...mssqlObj };
+                            });
+    
+                            if (mergedResult.length === 0) {
+                                res.send({
+                                    status: 404,
+                                    data: "Employee not found"
+                                });
+                            } else {
+                                res.send({
+                                    status: 200,
+                                    data: mergedResult[0]
+                                });
+                            }
+                        };
+                    });
+                };
+            });
+        } catch (err) {
             console.log(err);
         }
     }

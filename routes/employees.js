@@ -5,6 +5,18 @@ const router = express.Router();
 router.post('/store', async (req, res) => {
     EmployeesController.store(req, res);
 });
+router.delete('/delete', async (req, res) => {
+    EmployeesController.deleteEmployee(req, res);
+});
+
+router.put('/update', async (req, res) => {
+    EmployeesController.updateEmployee(req, res);
+});
+
+router.get('/get/:id', async (req, res) => {
+    EmployeesController.getUserById(req, res);
+});
+
 router.get('/total-income', async (req, res) => {
     EmployeesController.getEmployeeEarnings(req, res);
 });
